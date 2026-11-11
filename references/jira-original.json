@@ -1,0 +1,904 @@
+{
+  "captured_at": "2026-11-10T10:34:16.720599+00:00",
+  "cases": [
+    {
+      "key": "AISTD-51",
+      "title": "验证磁盘型号/容量/接口识别",
+      "updated": "2026-10-21T03:49:01.000+0000",
+      "description": "h3. 前置条件\n系统正常启动\\n\\nsudo apt install -y nvme-cli\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT (含smoke)\nh3. Source TestLink Cases\n* tcstandard-527 (DVT/磁盘)\n* tcstandard-685 (PVT/磁盘)\n* tcstandard-1210 (EVT/磁盘)\n* tcstandard-1286 (EVT/smoketest)\n* tcstandard-1317 (DVT/smoketest)\n* tcstandard-1354 (PVT/smoketest)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 159,
+          "tcId": 11350,
+          "expectedResult": "磁盘型号、容量、序列号、接口类型与规格书一致",
+          "step": "lsblk -o NAME,SIZE,MODEL,SERIAL,ROTA,TYPE,MOUNTPOINT && sudo nvme list || true"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-51"
+    },
+    {
+      "key": "AISTD-52",
+      "title": "验证健康状态正常",
+      "updated": "2026-10-21T03:49:42.000+0000",
+      "description": "h3. 前置条件\nsmartmontools已安装\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT (含smoke)\nh3. Source TestLink Cases\n* tcstandard-528 (DVT/磁盘)\n* tcstandard-686 (PVT/磁盘)\n* tcstandard-1211 (EVT/磁盘)\n* tcstandard-1284 (EVT/smoketest)\n* tcstandard-1315 (DVT/smoketest)\n* tcstandard-1352 (PVT/smoketest)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 160,
+          "tcId": 11351,
+          "expectedResult": "读取SMART日志与健康状态，健康状态正常，无介质错误",
+          "step": "sudo smartctl -a /dev/nvme0n1 || sudo smartctl -a /dev/sda"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-52"
+    },
+    {
+      "key": "AISTD-55",
+      "title": "验证基础读写",
+      "updated": "2026-10-21T03:50:05.000+0000",
+      "description": "h3. 前置条件\n测试分区已挂载\\n\\n在/mnt目录下创建testdisk目录\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT (含smoke)\nh3. Source TestLink Cases\n* tcstandard-531 (DVT/磁盘)\n* tcstandard-689 (PVT/磁盘)\n* tcstandard-1214 (EVT/磁盘)\n* tcstandard-1285 (EVT/smoketest)\n* tcstandard-1316 (DVT/smoketest)\n* tcstandard-1353 (PVT/smoketest)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 163,
+          "tcId": 11354,
+          "expectedResult": "执行1GiB写入和读取，读写成功，命令返回0，无I/O error",
+          "step": "1. dd if=/dev/zero of=/mnt/testdisk/smoke.bin bs=1G count=1 oflag=direct && dd if=/mnt/testdisk/smoke.bin of=/dev/null bs=1G iflag=direct"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-55"
+    },
+    {
+      "key": "AISTD-56",
+      "title": "验证重启后一致性",
+      "updated": "2026-09-19T07:31:06.000+0000",
+      "description": "h3. 前置条件\n上述用例测试成功，已写入测试文件\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT\nh3. Source TestLink Cases\n* tcstandard-532 (DVT/磁盘)\n* tcstandard-690 (PVT/磁盘)\n* tcstandard-1215 (EVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 164,
+          "tcId": 11355,
+          "expectedResult": "重启后文件可访问，校验一致",
+          "step": "sync，然后reboot,重启，再执行ls /mnt/testdisk && md5sum /mnt/testdisk/smoke.bin"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-56"
+    },
+    {
+      "key": "AISTD-57",
+      "title": "验证顺序写吞吐",
+      "updated": "2026-10-21T02:53:11.000+0000",
+      "description": "h3. 前置条件\n测试文件路径可用\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT\nh3. Source TestLink Cases\n* tcstandard-533 (DVT/磁盘)\n* tcstandard-691 (PVT/磁盘)\n* tcstandard-1216 (EVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 165,
+          "tcId": 11356,
+          "expectedResult": "记录BW/IOPS/latency,顺序写性能稳定,BW达到规格",
+          "stepData": "",
+          "step": "fio --name=seq_write --filename=/mnt/testdisk/fio_test --size=5G --bs=1M --rw=write --ioengine=libaio --iodepth=32 --direct=1 --numjobs=1 --runtime=60 --time_based --group_reporting"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-57"
+    },
+    {
+      "key": "AISTD-58",
+      "title": "验证顺序读吞吐",
+      "updated": "2026-10-21T03:50:23.000+0000",
+      "description": "h3. 前置条件\n已生成测试文件\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT (含smoke)\nh3. Source TestLink Cases\n* tcstandard-534 (DVT/磁盘)\n* tcstandard-692 (PVT/磁盘)\n* tcstandard-1217 (EVT/磁盘)\n* tcstandard-1355 (PVT/smoketest)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 166,
+          "tcId": 11357,
+          "expectedResult": "记录BW/IOPS/latency,顺序读性能稳定,BW达到规格",
+          "stepData": "",
+          "step": "fio --name=seq_read --filename=/mnt/testdisk/fio_test --size=5G --bs=1M --rw=read --ioengine=libaio --iodepth=32 --direct=1 --numjobs=1 --runtime=60 --time_based --group_reporting"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-58"
+    },
+    {
+      "key": "AISTD-59",
+      "title": "验证随机读IOPS",
+      "updated": "2026-10-26T09:04:57.000+0000",
+      "description": "h3. 前置条件\n测试文件路径可用\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT\nh3. Source TestLink Cases\n* tcstandard-535 (DVT/磁盘)\n* tcstandard-1218 (EVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 167,
+          "tcId": 11358,
+          "expectedResult": "记录BW/IOPS/latency,随机读性能稳定,IOPS达到规格",
+          "stepData": "",
+          "step": "fio --name=rand_read --filename=/mnt/testdisk/fio_test --size=8G --bs=4k --rw=randread --iodepth=128 --ioengine=io_uring --direct=1 --numjobs=4 --runtime=60 --time_based --group_reporting"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-59"
+    },
+    {
+      "key": "AISTD-60",
+      "title": "验证随机写IOPS",
+      "updated": "2026-10-21T03:08:08.000+0000",
+      "description": "h3. 前置条件\n测试文件路径可用\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT\nh3. Source TestLink Cases\n* tcstandard-536 (DVT/磁盘)\n* tcstandard-694 (PVT/磁盘)\n* tcstandard-1219 (EVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 168,
+          "tcId": 11359,
+          "expectedResult": "记录BW/IOPS/latency,随机写性能稳定,IOPS达到规格",
+          "stepData": "",
+          "step": "fio --name=rand_write --filename=/mnt/testdisk/fio_test --size=8G --bs=4k --rw=randwrite --ioengine=libaio --iodepth=64 --direct=1 --numjobs=4 --runtime=60 --time_based --group_reporting"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-60"
+    },
+    {
+      "key": "AISTD-61",
+      "title": "验证业务类混合负载性能",
+      "updated": "2026-10-21T03:09:20.000+0000",
+      "description": "h3. 前置条件\n测试文件路径可用\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-537 (DVT/磁盘)\n* tcstandard-695 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 169,
+          "tcId": 11360,
+          "expectedResult": "记录混合读写结果，混合负载性能稳定，达到规格",
+          "stepData": "",
+          "step": "fio --name=rand_rw --filename=/mnt/testdisk/fio_test --size=8G --bs=4k --rw=randrw --rwmixread=70 --ioengine=libaio --iodepth=64 --direct=1 --numjobs=4 --runtime=60 --time_based --group_reporting"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-61"
+    },
+    {
+      "key": "AISTD-62",
+      "title": "验证长写后的热衰减",
+      "updated": "2026-10-21T03:21:44.000+0000",
+      "description": "h3. 前置条件\n监控温度可用\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-538 (DVT/磁盘)\n* tcstandard-696 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 170,
+          "tcId": 11361,
+          "expectedResult": "长写30分钟并记录后段性能，热态性能衰减可控，后段BW下降不超过阈值；无过温告警",
+          "stepData": "",
+          "step": "bash -lc 'set -o pipefail; fio --name=heat --filename=/mnt/testdisk/fio_hot --size=50G --bs=1M --rw=write --ioengine=libaio --iodepth=32 --direct=1 --runtime=1800 --time_based --group_reporting | tee /tmp/fio_hot.log; fio_rc=${PIPESTATUS[0]}; sudo smartctl -a /dev/nvme0n1 | tee /tmp/smart_after_heat.log | egrep -i \"temperature|warning\"; smart_rc=${PIPESTATUS[0]}; [ $fio_rc -eq 0 ] &amp;&amp; [ $smart_rc -eq 0 ]'"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-62"
+    },
+    {
+      "key": "AISTD-63",
+      "title": "验证长时间顺序写稳定性",
+      "updated": "2026-10-21T03:22:45.000+0000",
+      "description": "h3. 前置条件\n监控可用\n\nh3. 测试类型\n稳定性测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-539 (DVT/磁盘)\n* tcstandard-697 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 171,
+          "tcId": 11362,
+          "expectedResult": "长时运行无错误、无I/O error，无掉盘",
+          "stepData": "",
+          "step": "fio --name=seq_write_long --filename=/mnt/testdisk/fio_long --size=20G --bs=1M --rw=write --ioengine=libaio --iodepth=32 --direct=1 --numjobs=1 --runtime=4h --time_based --group_reporting --write_bw_log=/tmp/seq_write_long_bw --write_lat_log=/tmp/seq_write_long_lat --log_avg_msec=1000"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-63"
+    },
+    {
+      "key": "AISTD-64",
+      "title": "验证长稳",
+      "updated": "2026-10-21T03:23:20.000+0000",
+      "description": "h3. 前置条件\n监控可用\n\nh3. 测试类型\n稳定性测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-540 (DVT/磁盘)\n* tcstandard-698 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 172,
+          "tcId": 11363,
+          "expectedResult": "长时运行无错误、无I/O error，无控制器reset",
+          "stepData": "",
+          "step": "fio --name=rand_rw_long --filename=/mnt/testdisk/fio_long --size=20G --bs=4k --rw=randrw --rwmixread=70 --ioengine=libaio --iodepth=64 --direct=1 --numjobs=4 --runtime=4h --time_based --group_reporting --write_bw_log=/tmp/rand_rw_long_bw --write_iops_log=/tmp/rand_rw_long_iops --write_lat_log=/tmp/rand_rw_long_lat --log_avg_msec=1000"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-64"
+    },
+    {
+      "key": "AISTD-65",
+      "title": "验证长时读写数据一致性",
+      "updated": "2026-10-21T03:24:02.000+0000",
+      "description": "h3. 前置条件\n测试路径可用\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-541 (DVT/磁盘)\n* tcstandard-699 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 173,
+          "tcId": 11364,
+          "expectedResult": "先写后校验，校验通过，无silent corruption",
+          "stepData": "",
+          "step": "fio --name=verify_long --filename=/mnt/testdisk/fio_verify --size=10G --bs=128k --rw=write --ioengine=libaio --iodepth=8 --direct=1 --do_verify=1 --verify=crc32c --verify_fatal=1 --verify_dump=1 --numjobs=1 --runtime=4h --time_based --group_reporting"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-65"
+    },
+    {
+      "key": "AISTD-66",
+      "title": "验证高温下磁盘稳定性",
+      "updated": "2026-10-21T03:24:28.000+0000",
+      "description": "h3. 前置条件\n环境箱可用\n\nh3. 测试类型\n稳定性测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-542 (DVT/磁盘)\n* tcstandard-700 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 174,
+          "tcId": 11365,
+          "expectedResult": "高温下无掉盘/无过热保护失控，无掉盘；无critical warning",
+          "stepData": "",
+          "step": "fio --name=hot_disk --filename=/mnt/testdisk/fio_hot --size=10G --bs=4k --rw=randrw --rwmixread=70 --ioengine=libaio --iodepth=64 --direct=1 --numjobs=4 --runtime=2h --time_based --group_reporting --write_bw_log=/tmp/hot_disk_bw --write_iops_log=/tmp/hot_disk_iops --write_lat_log=/tmp/hot_disk_lat --log_avg_msec=1000"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-66"
+    },
+    {
+      "key": "AISTD-67",
+      "title": "验证断电恢复能力",
+      "updated": "2026-10-21T03:22:46.000+0000",
+      "description": "h3. 前置条件\n1. 准备经批准可用于异常断电测试的专用测试盘及ext4测试分区；记录磁盘SN、型号、容量、整盘路径和分区路径。测试盘不得是系统盘、业务数据盘，也不得承载/、/boot、/boot/efi、/home、swap或其他在用文件系统；重要数据已备份。\n2. 已按AISTD-53/AISTD-54或等效流程完成测试盘身份、分区归属和读写检查。无法根据SN唯一确认磁盘、分区不属于该磁盘、存在RAID/LVM/加密卷/多路径或占用关系不明时，停止并记录BLOCKED。\n3. 测试人员可通过本地控制台或可靠带外管理恢复操作；具备经批准的整机输入电源断开方法。异常断电会中断业务，须在隔离测试环境执行。\n4. 已安装fio、lsblk、findmnt、swapon、udevadm、e2fsck、sha256sum和smartctl（或产品批准的磁盘健康工具），并准备独立于测试分区的日志/校验文件保存位置。\n5. 重启后设备路径可能变化，必须重新按SN识别磁盘和分区；不得沿用重启前路径或固定/dev/nvme0n1p1。文件系统检查必须在测试分区未挂载时执行。\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-543 (DVT/磁盘)\n* tcstandard-701 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 175,
+          "tcId": 11366,
+          "expectedResult": "SN、型号、容量与批准记录一致；TEST_DISK为整盘、TEST_PART为其分区且文件系统为ext4；目标不是系统盘或在用业务盘。findmnt显示/mnt/aistd67-test的唯一来源为TEST_PART且可读写。任一身份、归属或占用检查不满足时记录BLOCKED，不执行后续步骤。",
+          "stepData": "",
+          "step": "执行只读查询并保存输出：\nlsblk -d -p -o NAME,TYPE,SIZE,MODEL,SERIAL,WWN\nfindmnt -rn -o SOURCE,TARGET\nswapon --show\nlsblk -p -o NAME,TYPE,SIZE,PKNAME,FSTYPE,MOUNTPOINT\n根据实物标签/资产台账的SN选择专用测试盘，输入并记录TEST_DISK、EXPECTED_SN和TEST_PART；确认TEST_PART属于TEST_DISK，且不承载系统、swap或业务数据。创建专用挂载点/mnt/aistd67-test，将TEST_PART挂载到该目录后用findmnt核对来源。"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 176,
+          "tcId": 11366,
+          "expectedResult": "128MiB基线文件创建成功；两次sync完成；首次sha256sum校验显示OK且退出码为0。校验文件已保存到不受本次断电影响的非测试分区或外部测试记录，能够在重启后取回。",
+          "stepData": "",
+          "step": "在测试分区建立已持久化的基线文件，并把校验值保存在非测试分区及测试记录中：\nsudo dd if=/dev/urandom of=/mnt/aistd67-test/aistd67-baseline.bin bs=1M count=128 status=progress\nsync\nsudo sha256sum /mnt/aistd67-test/aistd67-baseline.bin | sudo tee /var/tmp/aistd67-baseline.sha256\nsync\nsudo sha256sum -c /var/tmp/aistd67-baseline.sha256\n记录基线文件大小、SHA-256和命令退出码。"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 4800,
+          "tcId": 11366,
+          "expectedResult": "断电前fio进程持续运行且目标文件位于已确认的测试分区；整机因输入电源断开而停止，负载被非正常中断。恢复供电后整机能够完成POST并进入OS或维护环境。仅“能够开机”不作为本用例最终通过结论。",
+          "stepData": "",
+          "step": "在/mnt/aistd67-test上启动独立压力文件的随机写负载：\nsudo fio --name=powercut --filename=/mnt/aistd67-test/fio_powercut.bin --size=2G --rw=randwrite --bs=4k --numjobs=4 --time_based --runtime=300 --direct=1 --group_reporting\n确认fio持续产生I/O至少60秒后，记录断电时间，通过批准的方法直接断开整机输入电源，不执行正常关机；等待不少于30秒后恢复供电并开机。"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 4801,
+          "tcId": 11366,
+          "expectedResult": "重启后仍通过同一SN找到目标测试盘并重新确认分区归属。执行文件系统检查前，findmnt不返回TEST_PART的活动挂载；若无法卸载、仍有进程占用或设备身份发生变化，则记录BLOCKED并停止，不得在挂载状态下运行修复。",
+          "stepData": "",
+          "step": "重启后不要访问或写入测试分区。先执行sudo udevadm settle，再根据记录的EXPECTED_SN重新执行lsblk -d -p -o NAME,TYPE,SIZE,MODEL,SERIAL,WWN和lsblk -p -o NAME,TYPE,SIZE,PKNAME,FSTYPE,MOUNTPOINT，重新确认当前TEST_DISK与TEST_PART。执行findmnt --source \"$TEST_PART\"；如果已自动挂载，执行sudo umount \"$TEST_PART\"，随后再次执行findmnt --source \"$TEST_PART\"确认。禁止使用强制或懒卸载。"
+        },
+        {
+          "sequenceNumber": "5",
+          "id": 4802,
+          "tcId": 11366,
+          "expectedResult": "恢复检查退出码为0或1；如返回2，完成要求的重启并重新识别、卸载和检查。不得出现4（错误未修复）或更高退出码。最终只读复检VERIFY_RC为0，表明文件系统已处于一致状态；所有修复项和退出码均有记录。",
+          "stepData": "",
+          "step": "在TEST_PART未挂载的前提下执行离线检查并记录完整输出和退出码：\nsudo e2fsck -f -p \"$TEST_PART\"\nFSCK_RC=$?\necho \"e2fsck recovery rc=$FSCK_RC\"\n若返回2，按工具要求重启后重新执行步骤4及本步骤；返回4或更高立即停止并记录FAIL。完成必要恢复后再次执行只读复检：\nsudo e2fsck -f -n \"$TEST_PART\"\nVERIFY_RC=$?\necho \"e2fsck verify rc=$VERIFY_RC\""
+        },
+        {
+          "sequenceNumber": "6",
+          "id": 4803,
+          "tcId": 11366,
+          "expectedResult": "挂载来源为TEST_PART、文件系统为ext4且挂载选项包含rw；断电前已sync的基线文件SHA-256校验显示OK且退出码为0；新文件能够写入并准确读回。任一校验失败判FAIL，并保存现场，不得重新生成基线掩盖错误。",
+          "stepData": "",
+          "step": "确认/mnt/aistd67-test为空且不是其他文件系统的挂载点后，重新挂载TEST_PART：\nsudo mount \"$TEST_PART\" /mnt/aistd67-test\nfindmnt --mountpoint /mnt/aistd67-test -o SOURCE,FSTYPE,OPTIONS,TARGET\nsudo sha256sum -c /var/tmp/aistd67-baseline.sha256\nprintf 'AISTD-67-readwrite-check\\n' | sudo tee /mnt/aistd67-test/aistd67-readwrite.txt\nsync\nsudo grep -Fx 'AISTD-67-readwrite-check' /mnt/aistd67-test/aistd67-readwrite.txt\n记录各命令退出码。不要把断电时仍在写入的fio_powercut.bin作为已持久化数据一致性的判定对象。"
+        },
+        {
+          "sequenceNumber": "7",
+          "id": 4804,
+          "tcId": 11366,
+          "expectedResult": "日志和检查结果可追溯到目标盘SN；测试盘持续可识别，无持续I/O错误、掉盘或不可恢复介质错误；测试分区正常卸载。整机恢复启动、离线文件系统复检通过、基线哈希一致、恢复后读写正常四项全部满足才判PASS；任一项失败判FAIL。",
+          "stepData": "",
+          "step": "保存fio中断信息、e2fsck输出、基线哈希结果、dmesg/journalctl中与存储和文件系统相关的日志，以及smartctl或批准健康工具输出。确认测试后无持续I/O error、掉盘、不可恢复介质错误或重复文件系统错误。最后执行sync和sudo umount /mnt/aistd67-test，并用findmnt确认已卸载。"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-67"
+    },
+    {
+      "key": "AISTD-68",
+      "title": "验证盘满时业务与系统行为",
+      "updated": "2026-09-19T07:31:08.000+0000",
+      "description": "h3. 前置条件\n测试盘已挂载\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-544 (DVT/磁盘)\n* tcstandard-702 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 177,
+          "tcId": 11367,
+          "expectedResult": "尽量写满分区后执行小文件写入，系统明确报空间不足，无异常掉盘",
+          "step": "fallocate -l 95%$(df --output=size -B1 /mnt/testdisk | tail -1 | tr -d ' ') /mnt/testdisk/fill.bin"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-68"
+    },
+    {
+      "key": "AISTD-69",
+      "title": "验证测试后无隐藏错误",
+      "updated": "2026-09-19T07:31:08.000+0000",
+      "description": "h3. 前置条件\n已完成磁盘测试\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / EVT / PVT\nh3. Source TestLink Cases\n* tcstandard-545 (DVT/磁盘)\n* tcstandard-703 (PVT/磁盘)\n* tcstandard-1228 (EVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 178,
+          "tcId": 11368,
+          "expectedResult": "无致命磁盘错误",
+          "step": "dmesg | egrep -i 'I/O error|nvme.*reset|ext4.*error|buffer i/o error|blk_update_request' || true"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-69"
+    },
+    {
+      "key": "AISTD-70",
+      "title": "验证SSD的TRIM支持",
+      "updated": "2026-09-19T07:31:08.000+0000",
+      "description": "h3. 前置条件\next4/xfs挂载完成\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-546 (DVT/磁盘)\n* tcstandard-704 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 179,
+          "tcId": 11369,
+          "expectedResult": "TRIM命令成功，返回0；回收字节数正常",
+          "step": "sudo fstrim -v /mnt/testdisk"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-70"
+    },
+    {
+      "key": "AISTD-174",
+      "title": "验证随机读IOPS",
+      "updated": "2026-09-19T07:31:21.000+0000",
+      "description": "h3. 前置条件\n测试文件路径可用\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nPVT\nh3. Source TestLink Cases\n* tcstandard-693 (PVT/磁盘)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 386,
+          "tcId": 11473,
+          "expectedResult": "记录BW/IOPS/latency,随机读性能稳定,IOPS达到规格",
+          "step": "fio --name=rand_read --filename=/mnt/testdisk/fio_test --size=8G --bs=4k --rw=randread --iodepth=64 --direct=1 --numjobs=4 --runtime=60 --time_based --group_reporting"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-174"
+    },
+    {
+      "key": "AISTD-209",
+      "title": "验证系统识别全部存储设备且健康状态正常",
+      "updated": "2026-10-21T04:07:32.000+0000",
+      "description": "【测试目的】\n按BOM和序列号逐盘确认所有物理存储设备、控制器、驱动及SMART/NVMe健康状态，避免固定设备名造成漏检或错盘。\n\n【适用范围】AIPC、AI Workstation、AI Server\n【测试阶段】DVT、PVT\n【测试类型】功能测试\n【前置条件】\n1. 已取得存储BOM/物理盘清单，包含型号、容量、SN、接口和数量。\n2. 已安装smartmontools和nvme-cli并具备sudo权限。\n3. 本用例只做枚举和只读健康查询，不进行分区、格式化或写盘。\n\n【来源】TestLink tcstandard-719（修订）",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 513,
+          "tcId": 11508,
+          "expectedResult": "每块物理盘均按SN唯一映射到BOM，数量、型号、容量和接口一致；无缺盘、重复盘或无法确认归属设备。",
+          "stepData": "BOM和lsblk完整输出。",
+          "step": "执行 lsblk -d -p -o NAME,TYPE,SIZE,MODEL,SERIAL,WWN,TRAN，按SN、型号、容量和接口与BOM逐一映射。"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 514,
+          "tcId": 11508,
+          "expectedResult": "设计要求的控制器均被识别并绑定批准驱动，无未绑定或异常状态。",
+          "stepData": "控制器PCI ID及Kernel driver in use。",
+          "step": "执行 lspci -nnk | grep -A3 -Ei \"SATA|RAID|Non-Volatile memory\"，核对控制器及驱动。"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 515,
+          "tcId": 11508,
+          "expectedResult": "每块支持SMART的磁盘均完成只读检查；总体健康正常，关键属性不超过批准阈值。不支持设备须记录原因和所需厂商工具，不得直接PASS。",
+          "stepData": "扫描结果及逐盘SMART输出。",
+          "step": "执行 sudo smartctl --scan-open，对返回的每个受支持设备路径逐一执行 sudo smartctl -a <设备路径>，并按SN映射。"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 516,
+          "tcId": 11508,
+          "expectedResult": "每个NVMe均按SN完成查询；critical_warning为0，media/data integrity errors为0或不超过批准基线，测试期间unsafe shutdown无新增。",
+          "stepData": "NVMe清单及每个控制器smart-log。",
+          "step": "执行 sudo nvme list；按SN确认每个NVMe控制器路径后逐个执行 sudo nvme smart-log <控制器路径>，不得假定为 /dev/nvme0。"
+        },
+        {
+          "sequenceNumber": "5",
+          "id": 517,
+          "tcId": 11508,
+          "expectedResult": "BOM全部物理盘均有且仅有一条枚举和健康记录；无遗漏、错盘、未解释告警或超批准阈值属性。",
+          "stepData": "逐盘映射与健康汇总。",
+          "step": "建立BOM—OS设备路径—控制器—健康结果的一一对应表并保存证据。"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-209"
+    },
+    {
+      "key": "AISTD-210",
+      "title": "验证磁盘IO性能符合设计预期",
+      "updated": "2026-10-21T03:54:41.000+0000",
+      "description": "h3. 前置条件\n统信UOS/Ubuntu/麒麟 + 待测整机\\n\\n磁盘空闲空间≥10GB\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-949 (DVT/兼容性测试/硬件兼容性测试)\n* tcstandard-1052 (PVT/兼容性测试/硬件兼容性测试)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 518,
+          "tcId": 11509,
+          "expectedResult": "fio安装成功，执行fio --version可返回版本号。",
+          "stepData": "",
+          "step": "安装fio"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 519,
+          "tcId": 11509,
+          "expectedResult": "fio顺序读测试完成且无I/O错误，输出带宽、IOPS和延迟，结果达到被测盘规格或项目基线。",
+          "stepData": "",
+          "step": "顺序写: fio --name=seq_write --filename=/mnt/testdisk/fio_perf --rw=write --bs=1M --size=4G --numjobs=1 --runtime=60 --time_based --group_reporting --ioengine=libaio --iodepth=32 --direct=1"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 520,
+          "tcId": 11509,
+          "expectedResult": "fio顺序写测试完成且无I/O错误，输出带宽、IOPS和延迟，结果达到被测盘规格或项目基线。",
+          "stepData": "",
+          "step": "顺序读: fio --name=seq_read --filename=/mnt/testdisk/fio_perf --rw=read --bs=1M --size=4G --numjobs=1 --runtime=60 --time_based --group_reporting --ioengine=libaio --iodepth=32 --direct=1"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 521,
+          "tcId": 11509,
+          "expectedResult": "NVMe Gen3: 读≥2500 写≥1500 MB/s；SATA SSD≥500；HDD≥150(以规格书为准)",
+          "step": "记录MB/s对比规格书"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-210"
+    },
+    {
+      "key": "AISTD-211",
+      "title": "验证磁盘随机小块IO性能",
+      "updated": "2026-10-21T03:56:00.000+0000",
+      "description": "h3. 前置条件\n统信UOS/Ubuntu/麒麟 + 待测整机\\n\\n磁盘有足够空间\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-950 (DVT/兼容性测试/硬件兼容性测试)\n* tcstandard-1053 (PVT/兼容性测试/硬件兼容性测试)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 522,
+          "tcId": 11510,
+          "expectedResult": "fio随机读测试完成且无I/O错误，输出4K随机读IOPS、带宽及平均/高分位延迟。",
+          "stepData": "",
+          "step": "随机读:  fio --name=rand_read --directory=/mnt/testdisk --rw=randread --bs=4k --size=1G --numjobs=4 --runtime=60 --time_based --group_reporting --ioengine=libaio --iodepth=32 --direct=1"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 523,
+          "tcId": 11510,
+          "expectedResult": "fio随机写测试完成且无I/O错误，输出4K随机写IOPS、带宽及平均/高分位延迟。",
+          "stepData": "",
+          "step": "随机写: fio --name=rand_write --directory=/mnt/testdisk --rw=randwrite --bs=4k --size=1G --numjobs=4 --runtime=60 --time_based --group_reporting --ioengine=libaio --iodepth=32 --direct=1"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 524,
+          "tcId": 11510,
+          "expectedResult": "中高端NVMe随机4K≥200K IOPS；延迟avg合理（以规格书为准）",
+          "step": "记录IOPS和延迟"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-211"
+    },
+    {
+      "key": "AISTD-212",
+      "title": "验证SSD TRIM功能正常工作",
+      "updated": "2026-10-21T03:46:01.000+0000",
+      "description": "h3. 前置条件\n统信UOS/Ubuntu/麒麟 + 待测整机(SSD)\\n\\nSSD分区使用ext4/xfs/btrfs\n\nh3. 测试类型\n功能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT / PVT\nh3. Source TestLink Cases\n* tcstandard-951 (DVT/兼容性测试/硬件兼容性测试)\n* tcstandard-1054 (PVT/兼容性测试/硬件兼容性测试)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 525,
+          "tcId": 11511,
+          "expectedResult": "至少一种TRIM机制有效：挂载选项含discard，或fstrim.timer处于enabled/active状态。",
+          "stepData": "",
+          "step": "确认挂载选项含discard或fstrim.timer已启用"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 526,
+          "tcId": 11511,
+          "expectedResult": "命令退出码为0并返回已释放字节数；不出现operation not supported或设备错误。",
+          "stepData": "",
+          "step": "sudo fstrim -v /"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 527,
+          "tcId": 11511,
+          "expectedResult": "fstrim.timer显示loaded且active/waiting，并有下一次计划执行时间。",
+          "stepData": "",
+          "step": "systemctl status fstrim.timer"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 528,
+          "tcId": 11511,
+          "expectedResult": "fstrim执行成功；fstrim.timer状态active；TRIM后写入放大降低",
+          "step": "创建大文件后删除，执行fstrim对比NVMe写入量"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-212"
+    },
+    {
+      "key": "AISTD-213",
+      "title": "验证支持热插拔背板的Server SSD移除、插入与恢复",
+      "updated": "2026-09-19T07:31:26.000+0000",
+      "description": "h3. 前置条件\n1. Server配置支持热插拔背板，已确认SSD类型、槽位与OS设备名映射以及控制器/HBA操作方法。2. 选择非系统测试SSD，数据已备份，无业务进程占用；准备校验文件、SMART/健康工具和BMC日志检查。3. Ubuntu、统信UOS、麒麟及驱动/固件符合测试基线。\n\nh3. 测试类型\n稳定性测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT\nh3. Source TestLink Cases\n* tcstandard-952 (DVT/兼容性测试/硬件兼容性测试)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 529,
+          "tcId": 11512,
+          "expectedResult": "支持能力和槽位映射明确；不支持的机型标记不适用，不执行物理拔盘。",
+          "step": "核对Server规格、背板/HBA能力及测试SSD槽位映射，确认该槽位明确支持热插拔。"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 530,
+          "tcId": 11512,
+          "expectedResult": "测试数据、校验值和盘状态记录完整。",
+          "step": "在非系统测试SSD写入测试文件并记录校验值、SMART/健康状态和当前设备信息。"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 531,
+          "tcId": 11512,
+          "expectedResult": "无进程占用和未完成I/O，设备成功进入可安全移除状态。",
+          "step": "停止I/O并卸载文件系统，按平台批准方法将测试SSD安全下线。"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 532,
+          "tcId": 11512,
+          "expectedResult": "目标盘从系统消失并产生正确告警；系统无Kernel Panic、控制器失联或其他盘异常。",
+          "step": "物理移除测试SSD，观察OS、BMC/HBA告警和业务系统状态。"
+        },
+        {
+          "sequenceNumber": "5",
+          "id": 533,
+          "tcId": 11512,
+          "expectedResult": "SSD在规定时间内重新识别，槽位、容量、固件和设备状态正确，告警可恢复。",
+          "step": "将SSD重新插入原槽位，按平台批准方法重扫或等待自动发现。"
+        },
+        {
+          "sequenceNumber": "6",
+          "id": 534,
+          "tcId": 11512,
+          "expectedResult": "文件校验一致，无文件系统错误、介质错误或新增不可恢复错误。",
+          "step": "重新挂载并校验测试文件、文件系统和SMART/健康状态。"
+        },
+        {
+          "sequenceNumber": "7",
+          "id": 535,
+          "tcId": 11512,
+          "expectedResult": "5次均成功，无累计设备错误、掉盘、总线错误或数据损坏；三种OS结果一致。",
+          "step": "重复5个移除/插入循环并检查dmesg、journalctl、控制器和BMC日志；三种OS分别执行。"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-213"
+    },
+    {
+      "key": "AISTD-292",
+      "title": "验证量产Server热插拔SSD移除、插入与恢复一致性",
+      "updated": "2026-09-19T07:31:36.000+0000",
+      "description": "h3. 前置条件\n1. 按PVT抽样方案选择支持热插拔的Server，记录SN、BOM、生产批次、背板/HBA、SSD及固件版本。2. 选择非系统测试SSD，数据已备份，无业务占用；记录槽位映射。3. 准备校验文件、SMART/健康工具及OS/BMC日志检查方法。\n\nh3. 测试类型\n稳定性测试\nh3. 执行方式\n手工\nh3. 阶段\nPVT\nh3. Source TestLink Cases\n* tcstandard-1055 (PVT/兼容性测试/硬件兼容性测试)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 971,
+          "tcId": 11591,
+          "expectedResult": "样机配置与批准BOM一致；不支持的机型标记不适用。",
+          "step": "核对当前Server SN、BOM、背板/HBA及测试SSD槽位映射，确认槽位支持热插拔。"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 972,
+          "tcId": 11591,
+          "expectedResult": "基线数据完整并关联当前SN。",
+          "step": "在非系统测试SSD写入文件并记录校验值、SMART和设备状态。"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 973,
+          "tcId": 11591,
+          "expectedResult": "设备进入可安全移除状态，无未完成I/O。",
+          "step": "停止I/O、卸载文件系统并按批准流程安全下线测试SSD。"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 974,
+          "tcId": 11591,
+          "expectedResult": "目标盘消失且告警正确；系统、控制器和其他磁盘正常。",
+          "step": "物理移除测试SSD并观察OS、BMC/HBA告警。"
+        },
+        {
+          "sequenceNumber": "5",
+          "id": 975,
+          "tcId": 11591,
+          "expectedResult": "SSD在规定时间内重新识别，槽位、容量、固件和状态正确。",
+          "step": "重新插入SSD并按批准流程恢复发现。"
+        },
+        {
+          "sequenceNumber": "6",
+          "id": 976,
+          "tcId": 11591,
+          "expectedResult": "校验一致，无数据损坏、文件系统错误或新增不可恢复错误。",
+          "step": "重新挂载并校验文件、文件系统及盘健康。"
+        },
+        {
+          "sequenceNumber": "7",
+          "id": 977,
+          "tcId": 11591,
+          "expectedResult": "全部循环成功，结果与SN、BOM和批次关联，批次间无系统性掉盘或数据异常。",
+          "step": "重复3个循环并在三种OS及抽样SN/批次上执行，检查相关日志。"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-292"
+    },
+    {
+      "key": "AISTD-323",
+      "title": "验证Server RAID/HBA与SSD故障、重建及数据完整性",
+      "updated": "2026-09-19T07:31:39.000+0000",
+      "description": "h3. 前置条件\n1. 已取得Server存储规格、RAID级别、HBA/控制器及热插拔能力。2. 准备专用测试SSD和可校验测试数据，所有数据已备份。3. BMC、SMART、控制器管理工具和系统日志可用。\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nDVT\nh3. Source TestLink Cases\n* tcstandard-1167 (DVT/Server)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 1171,
+          "tcId": 11622,
+          "expectedResult": "配置与产品设计一致，所有成员盘和阵列初始状态为正常/Optimal。",
+          "step": "记录Server型号、BOM、SSD数量/型号/固件、RAID/HBA型号/固件、阵列级别、条带、缓存和当前健康状态。"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 1172,
+          "tcId": 11622,
+          "expectedResult": "测试数据及健康基线完整；不使用系统盘或生产数据盘。",
+          "step": "在专用测试阵列写入测试数据并记录校验值，同时记录SMART、控制器和BMC基线。"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 1173,
+          "tcId": 11622,
+          "expectedResult": "阵列进入Degraded状态，OS/控制器/BMC产生正确告警；系统和业务I/O不崩溃，其他盘正常。",
+          "step": "保持持续读写或代表性业务I/O，按控制器批准方法将一块成员SSD置离线或从热插拔槽移除。"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 1174,
+          "tcId": 11622,
+          "expectedResult": "数据可访问且校验一致；无Kernel Panic、控制器失联、第二块盘异常或不可恢复错误。",
+          "step": "检查故障期间的数据访问、性能、dmesg、控制器日志和BMC SEL。"
+        },
+        {
+          "sequenceNumber": "5",
+          "id": 1175,
+          "tcId": 11622,
+          "expectedResult": "替换盘被正确识别，重建自动或按设计启动，告警状态正确。",
+          "step": "插回原SSD或更换符合BOM的空白SSD，按批准流程启动阵列重建。"
+        },
+        {
+          "sequenceNumber": "6",
+          "id": 1176,
+          "tcId": 11622,
+          "expectedResult": "重建可持续推进并完成，无卡住、异常重启、过温或新介质错误；业务保持可用。",
+          "step": "持续监控重建进度、I/O、SSD温度、性能和日志直至完成。"
+        },
+        {
+          "sequenceNumber": "7",
+          "id": 1177,
+          "tcId": 11622,
+          "expectedResult": "阵列恢复Optimal，成员盘状态正常，数据校验一致，无残留告警。",
+          "step": "重建完成后检查阵列、成员盘、SMART并重新校验测试数据。"
+        },
+        {
+          "sequenceNumber": "8",
+          "id": 1178,
+          "tcId": 11622,
+          "expectedResult": "各目标OS和实际配置均能正确识别、告警、重建和恢复；不配置RAID/HBA的Server标记不适用。",
+          "step": "在Ubuntu、统信UOS、麒麟支持的驱动/管理工具环境下重复关键流程，并按配置覆盖实际RAID级别。"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-323"
+    },
+    {
+      "key": "AISTD-326",
+      "title": "验证量产Server RAID/HBA与SSD故障重建一致性",
+      "updated": "2026-09-19T07:31:40.000+0000",
+      "description": "h3. 前置条件\n1. 按抽样方案选择Server，记录SN、BOM、生产批次、SSD、背板、HBA/控制器和固件。2. 准备专用测试阵列、可校验数据和替换SSD。3. SMART、控制器、BMC及系统日志工具可用。\n\nh3. 测试类型\n性能测试\nh3. 执行方式\n手工\nh3. 阶段\nPVT\nh3. Source TestLink Cases\n* tcstandard-1170 (PVT/Server)\n",
+      "steps": [
+        {
+          "sequenceNumber": "1",
+          "id": 1194,
+          "tcId": 11625,
+          "expectedResult": "配置与批准BOM一致，阵列和成员盘初始状态为Optimal。",
+          "step": "记录Server SN、BOM、生产批次、SSD/HBA/控制器、阵列级别、固件及初始状态。"
+        },
+        {
+          "sequenceNumber": "2",
+          "id": 1195,
+          "tcId": 11625,
+          "expectedResult": "测试数据和健康基线完整并关联当前SN。",
+          "step": "在专用非系统测试阵列写入数据并记录校验值、SMART和控制器/BMC基线。"
+        },
+        {
+          "sequenceNumber": "3",
+          "id": 1196,
+          "tcId": 11625,
+          "expectedResult": "阵列进入Degraded并正确告警；业务和系统保持可用，无其他盘异常。",
+          "step": "保持代表性I/O，按批准流程将一块成员SSD置离线或从支持热插拔的槽位移除。"
+        },
+        {
+          "sequenceNumber": "4",
+          "id": 1197,
+          "tcId": 11625,
+          "expectedResult": "数据一致，无Kernel Panic、控制器失联或不可恢复错误。",
+          "step": "检查故障期间数据校验、性能、系统、控制器和BMC日志。"
+        },
+        {
+          "sequenceNumber": "5",
+          "id": 1198,
+          "tcId": 11625,
+          "expectedResult": "替换盘识别正确，重建启动并持续推进，无卡住、过温或系统重启。",
+          "step": "插回或更换符合BOM的空白SSD，启动并监控重建。"
+        },
+        {
+          "sequenceNumber": "6",
+          "id": 1199,
+          "tcId": 11625,
+          "expectedResult": "阵列恢复Optimal，数据校验一致，无残留告警。",
+          "step": "重建完成后检查阵列、成员盘、SMART和数据校验。"
+        },
+        {
+          "sequenceNumber": "7",
+          "id": 1200,
+          "tcId": 11625,
+          "expectedResult": "结果与SN、BOM和批次关联，批次间无系统性重建失败或性能异常。",
+          "step": "在目标OS和其他抽样SN/批次重复关键流程并汇总重建时间及差异。"
+        }
+      ],
+      "comments": {
+        "comments": [],
+        "total": 0
+      },
+      "attachments": [],
+      "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-326"
+    }
+  ],
+  "scope_note": "仅保留27条硬盘用例定义；早期宽范围检索快照已移出Skill归档"
+}

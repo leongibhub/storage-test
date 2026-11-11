@@ -1,0 +1,49 @@
+{
+  "platform": {
+    "product_type": null,
+    "model": "REPLACE_WITH_CONFIRMED_MODEL",
+    "classification_source": "REPLACE_WITH_BOM_OR_CONFIRMED_SOURCE",
+    "expected_arch": null,
+    "capabilities": {}
+  },
+  "expected_devices": [
+    {
+      "serial": "REPLACE_FROM_INSPECT",
+      "model": "REPLACE_FROM_INSPECT",
+      "size": 1000000000000
+    }
+  ],
+  "device_spec": null,
+  "test_directory": "/mnt/approved-storage-tests",
+  "report_root": "/var/tmp/aistd-storage-reports",
+  "mode": "file",
+  "authorization": {
+    "file_write": false,
+    "raw_read": false,
+    "install_dependencies": false,
+    "reboot": false,
+    "trim": false
+  },
+  "allow_system_disk_file_test": false,
+  "max_space_bytes": null,
+  "min_free_bytes": null,
+  "max_total_write_bytes": null,
+  "max_case_seconds": null,
+  "file_bytes": 16777216,
+  "other_workload": "REPLACE_WITH_CONFIRMED_IDLE_OR_ACTUAL_WORKLOAD",
+  "stop_temperature_c": null,
+  "rate_limit_bytes_per_job": null,
+  "baselines": {},
+  "approve_verify_cycles": false,
+  "validation_only": false,
+  "performance_mode": "record_only",
+  "trim": {
+    "mounts": []
+  },
+  "disk_full": {
+    "mode": null,
+    "image_bytes": 1073741824
+  },
+  "ssh_host_key_sha256": null,
+  "expected_controller_drivers": null
+}

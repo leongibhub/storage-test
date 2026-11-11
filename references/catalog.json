@@ -1,0 +1,512 @@
+[
+  {
+    "id": "AISTD-51",
+    "title": "验证磁盘型号/容量/接口识别",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "identity",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "磁盘型号、容量、序列号、接口类型与规格书一致"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-51"
+  },
+  {
+    "id": "AISTD-52",
+    "title": "验证健康状态正常",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "health",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "读取SMART日志与健康状态，健康状态正常，无介质错误"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-52"
+  },
+  {
+    "id": "AISTD-55",
+    "title": "验证基础读写",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "basic",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "执行1GiB写入和读取，读写成功，命令返回0，无I/O error"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-55"
+  },
+  {
+    "id": "AISTD-56",
+    "title": "验证重启后一致性",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "reboot",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "重启后文件可访问，校验一致"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-56",
+    "scope_reason": "统一计划中的自动硬盘用例",
+    "execution_route": "automatic"
+  },
+  {
+    "id": "AISTD-57",
+    "title": "验证顺序写吞吐",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "seq_write",
+        "size": "5G",
+        "bs": "1M",
+        "rw": "write",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1",
+        "numjobs": "1",
+        "runtime": "60"
+      }
+    ],
+    "criteria": [
+      "记录BW/IOPS/latency,顺序写性能稳定,BW达到规格"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-57"
+  },
+  {
+    "id": "AISTD-58",
+    "title": "验证顺序读吞吐",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "seq_read",
+        "size": "5G",
+        "bs": "1M",
+        "rw": "read",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1",
+        "numjobs": "1",
+        "runtime": "60"
+      }
+    ],
+    "criteria": [
+      "记录BW/IOPS/latency,顺序读性能稳定,BW达到规格"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-58"
+  },
+  {
+    "id": "AISTD-59",
+    "title": "验证随机读IOPS",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "rand_read",
+        "size": "8G",
+        "bs": "4k",
+        "rw": "randread",
+        "iodepth": "128",
+        "ioengine": "io_uring",
+        "direct": "1",
+        "numjobs": "4",
+        "runtime": "60"
+      }
+    ],
+    "criteria": [
+      "记录BW/IOPS/latency,随机读性能稳定,IOPS达到规格"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-59"
+  },
+  {
+    "id": "AISTD-60",
+    "title": "验证随机写IOPS",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "rand_write",
+        "size": "8G",
+        "bs": "4k",
+        "rw": "randwrite",
+        "ioengine": "libaio",
+        "iodepth": "64",
+        "direct": "1",
+        "numjobs": "4",
+        "runtime": "60"
+      }
+    ],
+    "criteria": [
+      "记录BW/IOPS/latency,随机写性能稳定,IOPS达到规格"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-60"
+  },
+  {
+    "id": "AISTD-61",
+    "title": "验证业务类混合负载性能",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "rand_rw",
+        "size": "8G",
+        "bs": "4k",
+        "rw": "randrw",
+        "rwmixread": "70",
+        "ioengine": "libaio",
+        "iodepth": "64",
+        "direct": "1",
+        "numjobs": "4",
+        "runtime": "60"
+      }
+    ],
+    "criteria": [
+      "记录混合读写结果，混合负载性能稳定，达到规格"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-61"
+  },
+  {
+    "id": "AISTD-62",
+    "title": "验证长写后的热衰减",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "heat",
+        "size": "50G",
+        "bs": "1M",
+        "rw": "write",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1",
+        "runtime": "1800"
+      }
+    ],
+    "criteria": [
+      "长写30分钟并记录后段性能，热态性能衰减可控，后段BW下降不超过阈值；无过温告警"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-62"
+  },
+  {
+    "id": "AISTD-63",
+    "title": "验证长时间顺序写稳定性",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "stability",
+    "profiles": [
+      {
+        "name": "seq_write_long",
+        "size": "20G",
+        "bs": "1M",
+        "rw": "write",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1",
+        "numjobs": "1",
+        "runtime": "4h"
+      }
+    ],
+    "criteria": [
+      "长时运行无错误、无I/O error，无掉盘"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-63"
+  },
+  {
+    "id": "AISTD-64",
+    "title": "验证长稳",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "stability",
+    "profiles": [
+      {
+        "name": "rand_rw_long",
+        "size": "20G",
+        "bs": "4k",
+        "rw": "randrw",
+        "rwmixread": "70",
+        "ioengine": "libaio",
+        "iodepth": "64",
+        "direct": "1",
+        "numjobs": "4",
+        "runtime": "4h"
+      }
+    ],
+    "criteria": [
+      "长时运行无错误、无I/O error，无控制器reset"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-64"
+  },
+  {
+    "id": "AISTD-65",
+    "title": "验证长时读写数据一致性",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "stability",
+    "profiles": [
+      {
+        "name": "verify_long",
+        "size": "10G",
+        "bs": "128k",
+        "rw": "write",
+        "ioengine": "libaio",
+        "iodepth": "8",
+        "direct": "1",
+        "verify": "crc32c",
+        "numjobs": "1",
+        "runtime": "4h"
+      }
+    ],
+    "criteria": [
+      "先写后校验，校验通过，无silent corruption"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-65"
+  },
+  {
+    "id": "AISTD-68",
+    "title": "验证盘满时业务与系统行为",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "disk_full",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "尽量写满分区后执行小文件写入，系统明确报空间不足，无异常掉盘"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-68",
+    "scope_reason": "统一计划中的自动硬盘用例",
+    "execution_route": "automatic"
+  },
+  {
+    "id": "AISTD-69",
+    "title": "验证测试后无隐藏错误",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "logs",
+    "group": "stability",
+    "profiles": [],
+    "criteria": [
+      "无致命磁盘错误"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-69"
+  },
+  {
+    "id": "AISTD-70",
+    "title": "验证SSD的TRIM支持",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "trim",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "TRIM命令成功，返回0；回收字节数正常"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-70",
+    "scope_reason": "统一计划中的自动硬盘用例",
+    "execution_route": "automatic"
+  },
+  {
+    "id": "AISTD-174",
+    "title": "验证随机读IOPS",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "rand_read",
+        "size": "8G",
+        "bs": "4k",
+        "rw": "randread",
+        "iodepth": "64",
+        "direct": "1",
+        "numjobs": "4",
+        "runtime": "60",
+        "ioengine": "libaio"
+      }
+    ],
+    "criteria": [
+      "记录BW/IOPS/latency,随机读性能稳定,IOPS达到规格"
+    ],
+    "limitation": "需提前确认libaio方法；保留原8GiB共享文件、4job、QD64、60秒；仅记录性能",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-174"
+  },
+  {
+    "id": "AISTD-209",
+    "title": "验证系统识别全部存储设备且健康状态正常",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "disk_inventory",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "每块物理盘均按SN唯一映射到BOM，数量、型号、容量和接口一致；无缺盘、重复盘或无法确认归属设备。",
+      "设计要求的控制器均被识别并绑定批准驱动，无未绑定或异常状态。",
+      "每块支持SMART的磁盘均完成只读检查；总体健康正常，关键属性不超过批准阈值。不支持设备须记录原因和所需厂商工具，不得直接PASS。",
+      "每个NVMe均按SN完成查询；critical_warning为0，media/data integrity errors为0或不超过批准基线，测试期间unsafe shutdown无新增。",
+      "BOM全部物理盘均有且仅有一条枚举和健康记录；无遗漏、错盘、未解释告警或超批准阈值属性。"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-209",
+    "scope_reason": "统一计划中的自动硬盘用例",
+    "execution_route": "automatic"
+  },
+  {
+    "id": "AISTD-210",
+    "title": "验证磁盘IO性能符合设计预期",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "seq_write",
+        "rw": "write",
+        "bs": "1M",
+        "size": "4G",
+        "numjobs": "1",
+        "runtime": "60",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1"
+      },
+      {
+        "name": "seq_read",
+        "rw": "read",
+        "bs": "1M",
+        "size": "4G",
+        "numjobs": "1",
+        "runtime": "60",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1"
+      }
+    ],
+    "criteria": [
+      "fio安装成功，执行fio --version可返回版本号。",
+      "fio顺序读测试完成且无I/O错误，输出带宽、IOPS和延迟，结果达到被测盘规格或项目基线。",
+      "fio顺序写测试完成且无I/O错误，输出带宽、IOPS和延迟，结果达到被测盘规格或项目基线。",
+      "NVMe Gen3: 读≥2500 写≥1500 MB/s；SATA SSD≥500；HDD≥150(以规格书为准)"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-210"
+  },
+  {
+    "id": "AISTD-211",
+    "title": "验证磁盘随机小块IO性能",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "fio",
+    "group": "performance",
+    "profiles": [
+      {
+        "name": "rand_read",
+        "rw": "randread",
+        "bs": "4k",
+        "size": "1G",
+        "numjobs": "4",
+        "runtime": "60",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1"
+      },
+      {
+        "name": "rand_write",
+        "rw": "randwrite",
+        "bs": "4k",
+        "size": "1G",
+        "numjobs": "4",
+        "runtime": "60",
+        "ioengine": "libaio",
+        "iodepth": "32",
+        "direct": "1"
+      }
+    ],
+    "criteria": [
+      "fio随机读测试完成且无I/O错误，输出4K随机读IOPS、带宽及平均/高分位延迟。",
+      "fio随机写测试完成且无I/O错误，输出4K随机写IOPS、带宽及平均/高分位延迟。",
+      "中高端NVMe随机4K≥200K IOPS；延迟avg合理（以规格书为准）"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-211"
+  },
+  {
+    "id": "AISTD-212",
+    "title": "验证SSD TRIM功能正常工作",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "trim",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "至少一种TRIM机制有效：挂载选项含discard，或fstrim.timer处于enabled/active状态。",
+      "命令退出码为0并返回已释放字节数；不出现operation not supported或设备错误。",
+      "fstrim.timer显示loaded且active/waiting，并有下一次计划执行时间。",
+      "fstrim执行成功；fstrim.timer状态active；TRIM后写入放大降低"
+    ],
+    "limitation": "",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-212",
+    "scope_reason": "统一计划中的自动硬盘用例",
+    "execution_route": "automatic"
+  },
+  {
+    "id": "NEW-FILE",
+    "title": "专用文件创建、复制、重命名及SHA256回读",
+    "source": "新增覆盖",
+    "scope": "additional",
+    "kind": "file",
+    "group": "integrity",
+    "profiles": [],
+    "criteria": [
+      "实际数据回读哈希一致；仅清理自身文件"
+    ],
+    "limitation": "文件系统缓冲I/O，不证明断电持久性或GUI行为"
+  },
+  {
+    "id": "NEW-RAW-READ",
+    "title": "限定范围裸设备只读扫描",
+    "source": "新增覆盖",
+    "scope": "additional",
+    "kind": "raw_read",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "指定范围实际读取完毕，无I/O错误"
+    ],
+    "limitation": "不能验证原始数据正确性，不写入设备"
+  }
+]

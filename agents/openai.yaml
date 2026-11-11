@@ -1,0 +1,4 @@
+interface:
+  display_name: "AISTD 存储自动化测试"
+  short_description: "区分AIPC、工作站和服务器，支持ARM64的有界存储测试与报告"
+  default_prompt: "使用 $storage-test，先确认AIPC/AI Workstation/AI Server及x86_64/ARM64平台，按适用用例和已有授权执行存储测试并生成报告。"

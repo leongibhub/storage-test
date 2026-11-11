@@ -1,0 +1,129 @@
+[
+  {
+    "id": "AISTD-66",
+    "title": "验证高温下磁盘稳定性",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "external",
+    "group": "stability",
+    "profiles": [],
+    "criteria": [
+      "高温下无掉盘/无过热保护失控，无掉盘；无critical warning"
+    ],
+    "limitation": "需要环境箱温度曲线及批准测点、2小时环境保持证据",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-66",
+    "scope_reason": "需要环境箱、实际断电、物理插拔或替换成员盘；本Skill不安排人工动作",
+    "execution_route": "manual"
+  },
+  {
+    "id": "AISTD-67",
+    "title": "验证断电恢复能力",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "external",
+    "group": "stability",
+    "profiles": [],
+    "criteria": [
+      "SN、型号、容量与批准记录一致；TEST_DISK为整盘、TEST_PART为其分区且文件系统为ext4；目标不是系统盘或在用业务盘。findmnt显示/mnt/aistd67-test的唯一来源为TEST_PART且可读写。任一身份、归属或占用检查不满足时记录BLOCKED，不执行后续步骤。",
+      "128MiB基线文件创建成功；两次sync完成；首次sha256sum校验显示OK且退出码为0。校验文件已保存到不受本次断电影响的非测试分区或外部测试记录，能够在重启后取回。",
+      "断电前fio进程持续运行且目标文件位于已确认的测试分区；整机因输入电源断开而停止，负载被非正常中断。恢复供电后整机能够完成POST并进入OS或维护环境。仅“能够开机”不作为本用例最终通过结论。",
+      "重启后仍通过同一SN找到目标测试盘并重新确认分区归属。执行文件系统检查前，findmnt不返回TEST_PART的活动挂载；若无法卸载、仍有进程占用或设备身份发生变化，则记录BLOCKED并停止，不得在挂载状态下运行修复。",
+      "恢复检查退出码为0或1；如返回2，完成要求的重启并重新识别、卸载和检查。不得出现4（错误未修复）或更高退出码。最终只读复检VERIFY_RC为0，表明文件系统已处于一致状态；所有修复项和退出码均有记录。",
+      "挂载来源为TEST_PART、文件系统为ext4且挂载选项包含rw；断电前已sync的基线文件SHA-256校验显示OK且退出码为0；新文件能够写入并准确读回。任一校验失败判FAIL，并保存现场，不得重新生成基线掩盖错误。",
+      "日志和检查结果可追溯到目标盘SN；测试盘持续可识别，无持续I/O错误、掉盘或不可恢复介质错误；测试分区正常卸载。整机恢复启动、离线文件系统复检通过、基线哈希一致、恢复后读写正常四项全部满足才判PASS；任一项失败判FAIL。"
+    ],
+    "limitation": "需要外部电源控制/POST观察、离线ext4检查及完整恢复适配器",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-67",
+    "scope_reason": "需要环境箱、实际断电、物理插拔或替换成员盘；本Skill不安排人工动作",
+    "execution_route": "manual"
+  },
+  {
+    "id": "AISTD-213",
+    "title": "验证支持热插拔背板的Server SSD移除、插入与恢复",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "external",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "支持能力和槽位映射明确；不支持的机型标记不适用，不执行物理拔盘。",
+      "测试数据、校验值和盘状态记录完整。",
+      "无进程占用和未完成I/O，设备成功进入可安全移除状态。",
+      "目标盘从系统消失并产生正确告警；系统无Kernel Panic、控制器失联或其他盘异常。",
+      "SSD在规定时间内重新识别，槽位、容量、固件和设备状态正确，告警可恢复。",
+      "文件校验一致，无文件系统错误、介质错误或新增不可恢复错误。",
+      "5次均成功，无累计设备错误、掉盘、总线错误或数据损坏；三种OS结果一致。"
+    ],
+    "limitation": "需槽位、HBA/BMC观察与热插拔执行器；5轮×目标OS",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-213",
+    "scope_reason": "需要环境箱、实际断电、物理插拔或替换成员盘；本Skill不安排人工动作",
+    "execution_route": "manual"
+  },
+  {
+    "id": "AISTD-292",
+    "title": "验证量产Server热插拔SSD移除、插入与恢复一致性",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "external",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "样机配置与批准BOM一致；不支持的机型标记不适用。",
+      "基线数据完整并关联当前SN。",
+      "设备进入可安全移除状态，无未完成I/O。",
+      "目标盘消失且告警正确；系统、控制器和其他磁盘正常。",
+      "SSD在规定时间内重新识别，槽位、容量、固件和状态正确。",
+      "校验一致，无数据损坏、文件系统错误或新增不可恢复错误。",
+      "全部循环成功，结果与SN、BOM和批次关联，批次间无系统性掉盘或数据异常。"
+    ],
+    "limitation": "需热插拔执行器；3轮×目标OS/抽样SN批次",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-292",
+    "scope_reason": "需要环境箱、实际断电、物理插拔或替换成员盘；本Skill不安排人工动作",
+    "execution_route": "manual"
+  },
+  {
+    "id": "AISTD-323",
+    "title": "验证Server RAID/HBA与SSD故障、重建及数据完整性",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "external",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "配置与产品设计一致，所有成员盘和阵列初始状态为正常/Optimal。",
+      "测试数据及健康基线完整；不使用系统盘或生产数据盘。",
+      "阵列进入Degraded状态，OS/控制器/BMC产生正确告警；系统和业务I/O不崩溃，其他盘正常。",
+      "数据可访问且校验一致；无Kernel Panic、控制器失联、第二块盘异常或不可恢复错误。",
+      "替换盘被正确识别，重建自动或按设计启动，告警状态正确。",
+      "重建可持续推进并完成，无卡住、异常重启、过温或新介质错误；业务保持可用。",
+      "阵列恢复Optimal，成员盘状态正常，数据校验一致，无残留告警。",
+      "各目标OS和实际配置均能正确识别、告警、重建和恢复；不配置RAID/HBA的Server标记不适用。"
+    ],
+    "limitation": "需批准RAID控制器适配器、故障注入与重建状态观察",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-323",
+    "scope_reason": "需要环境箱、实际断电、物理插拔或替换成员盘；本Skill不安排人工动作",
+    "execution_route": "manual"
+  },
+  {
+    "id": "AISTD-326",
+    "title": "验证量产Server RAID/HBA与SSD故障重建一致性",
+    "source": "Jira",
+    "scope": "core",
+    "kind": "external",
+    "group": "function",
+    "profiles": [],
+    "criteria": [
+      "配置与批准BOM一致，阵列和成员盘初始状态为Optimal。",
+      "测试数据和健康基线完整并关联当前SN。",
+      "阵列进入Degraded并正确告警；业务和系统保持可用，无其他盘异常。",
+      "数据一致，无Kernel Panic、控制器失联或不可恢复错误。",
+      "替换盘识别正确，重建启动并持续推进，无卡住、过温或系统重启。",
+      "阵列恢复Optimal，数据校验一致，无残留告警。",
+      "结果与SN、BOM和批次关联，批次间无系统性重建失败或性能异常。"
+    ],
+    "limitation": "需RAID适配器和PVT抽样/跨OS批次",
+    "url": "https://jira.pcg.riverbegin.cn/browse/AISTD-326",
+    "scope_reason": "需要环境箱、实际断电、物理插拔或替换成员盘；本Skill不安排人工动作",
+    "execution_route": "manual"
+  }
+]
